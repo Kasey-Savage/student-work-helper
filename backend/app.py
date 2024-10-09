@@ -23,3 +23,21 @@ def add_assignment():
         f.write(f"{assignment},{due_date},{est_time}\n")
 
     return jsonify({"message": "Assignment added!"}), 200
+
+@app.route('/get_assignments', methods=['GET'])
+def get_assignments():
+    if not os.path.exists('data/assignments.csv'):
+        return jsonify([])
+
+    assignments = []
+    with open('data/assignments.csv', 'r') as f:
+        for line in f:
+            assignment_data = line.strip().split(',')
+            if len(assignment_data) == 3:
+                assignments.append({
+                    'assignment': assignment_data[0],
+                    'due_date': assignment_data[1],
+                    'est_time': assignment_data[2]
+                })
+
+    return jsonify(assignments)
