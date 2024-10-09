@@ -15,24 +15,42 @@ def add_assignment():
     due_date = data.get('due_date')
     est_time = data.get('est_time')
 
-    # Load existing assignments, append new one, and save back to CSV
-    df = pd.DataFrame(columns=['assignment', 'due_date', 'est_time'])
-    if os.path.exists('data/assignments.csv'):
-        df = pd.read_csv('data/assignments.csv')
+    print(f"Received assignment data: {data}")  # Debugging line
 
-    new_assignment = pd.DataFrame([[assignment, due_date, est_time]], columns=['assignment', 'due_date', 'est_time'])
-    df = pd.concat([df, new_assignment], ignore_index=True)
-    df.to_csv('data/assignments.csv', index=False)
+    # Check if the data folder exists; if not, create it
+    if not os.path.exists('data'):
+        os.makedirs('data')
+
+    # Save the assignment to a CSV file
+    file_path = 'data/assignments.csv'
+    with open(file_path, 'a') as f:
+        # If the file is empty, write the header
+        if os.path.getsize(file_path) == 0:
+            f.write('assignment,due_date,est_time\n')  # Write the header
+
+        f.write(f"{assignment},{due_date},{est_time}\n")
+
+    print(f"Assignment added: {assignment}, Due Date: {due_date}, Estimated Time: {est_time}")  # Debugging line
 
     return jsonify({"message": "Assignment added!"}), 200
 
 @app.route('/get_assignments', methods=['GET'])
 def get_assignments():
-    if not os.path.exists('data/assignments.csv'):
+    # Check if the file exists and is not empty
+    if not os.path.exists('data/assignments.csv') or os.path.getsize('data/assignments.csv') == 0:
         return jsonify([])
 
-    df = pd.read_csv('data/assignments.csv')
-    assignments = df.to_dict(orient='records')  # Convert to list of dictionaries
+    assignments = []
+    with open('data/assignments.csv', 'r') as f:
+        for line in f:
+            assignment_data = line.strip().split(',')
+            if len(assignment_data) == 3:
+                assignments.append({
+                    'assignment': assignment_data[0],
+                    'due_date': assignment_data[1],
+                    'est_time': assignment_data[2]
+                })
+
     return jsonify(assignments)
 
 if __name__ == '__main__':

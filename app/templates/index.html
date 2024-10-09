@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Work Helper</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-
 </head>
 <body>
     <header>
@@ -24,13 +22,12 @@
             <button type="submit">Add</button>
         </form>
     </section>
-    <section id="schedule">
-        <h2>Your Schedule</h2>
-        <!-- Display schedule here -->
+    <section id="upcoming-assignments">
+        <h2>Upcoming Assignments</h2>
+        <div id="schedule"></div>
     </section>
     <section id="suggested-times">
         <h2>Suggested Work Times</h2>
-        <!-- Show suggested times based on predictions here -->
     </section>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
