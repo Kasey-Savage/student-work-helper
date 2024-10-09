@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Work Helper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Student Work Helper</h1>
+    </header>
+    <section>
+        <h2>Add Assignment</h2>
+        <form id="assignment-form">
+            <label for="assignment">Assignment:</label>
+            <input type="text" id="assignment" name="assignment" required>
+            <label for="due-date">Due Date:</label>
+            <input type="date" id="due-date" name="due-date" required>
+            <label for="est-time">Estimated Time (hours):</label>
+            <input type="number" id="est-time" name="est-time" required>
+            <button type="submit">Add</button>
+        </form>
+    </section>
+    <section id="schedule">
+        <h2>Your Schedule</h2>
+        <!-- Display schedule here -->
+    </section>
+    <section id="suggested-times">
+        <h2>Suggested Work Times</h2>
+        <!-- Show suggested times based on predictions here -->
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
