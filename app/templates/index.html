@@ -5,30 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Work Helper</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
-    <header>
-        <h1>Student Work Helper</h1>
-    </header>
-    <section>
-        <h2>Add Assignment</h2>
-        <form id="assignment-form">
-            <label for="assignment">Assignment:</label>
-            <input type="text" id="assignment" name="assignment" required>
-            <label for="due-date">Due Date:</label>
+    <h1>Student Work Helper</h1>
+
+    <form id="task-form">
+        <select id="task-type" onchange="toggleTaskType(this.value)">
+            <option value="assignment" selected>Assignment</option>
+            <option value="schedule">Schedule</option>
+        </select>
+    
+        <div id="assignment-fields">
+            <input type="text" id="assignment" name="assignment" placeholder="Assignment" required>
             <input type="date" id="due-date" name="due-date" required>
-            <label for="est-time">Estimated Time (hours):</label>
-            <input type="number" id="est-time" name="est-time" required>
-            <button type="submit">Add</button>
-        </form>
-    </section>
-    <section id="upcoming-assignments">
-        <h2>Upcoming Assignments</h2>
-        <div id="schedule"></div>
-    </section>
-    <section id="suggested-times">
-        <h2>Suggested Work Times</h2>
-    </section>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+            <input type="number" id="est-time" name="est-time" placeholder="Estimated Time (hours)" required>
+        </div>
+    
+        <div id="schedule-fields" style="display: none;">
+            <select id="day-of-week" name="day-of-week" required>
+                <option value="">Select Day</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+            <input type="time" id="start-time" name="start-time" required>
+            <input type="time" id="end-time" name="end-time" required>
+            <input type="text" id="task-desc" name="task-desc" placeholder="Task Description" required>
+        </div>
+    
+        <button type="submit">Submit</button>
+    </form>
+    
+
+    <h2>Assignments</h2>
+    <ul id="assignments-list"></ul>
+
+    <h2>Schedule</h2>
+    <ul id="schedule-list"></ul>
+
+    <script src="/static/script.js"></script>
 </body>
 </html>
