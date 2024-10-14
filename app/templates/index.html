@@ -19,6 +19,7 @@
         <div id="assignment-fields">
             <input type="text" id="assignment" name="assignment" placeholder="Assignment" required>
             <input type="date" id="due-date" name="due-date" required>
+            <input type="time" id="due-date-time" name="due-date-time" required>
             <input type="number" id="est-time" name="est-time" placeholder="Estimated Time (hours)" required>
         </div>
     
@@ -41,13 +42,38 @@
         <button type="submit">Submit</button>
     </form>
     
-
-    <h2>Assignments</h2>
-    <ul id="assignments-list"></ul>
-
-    <h2>Schedule</h2>
-    <ul id="schedule-list"></ul>
-
+    <h2>Weekly Schedule</h2>
+    <div id="weekly-schedule">
+        <div class="day" id="Monday">
+            <h3>Monday</h3>
+            <ul id="monday-list"></ul>
+        </div>
+        <div class="day" id="Tuesday">
+            <h3>Tuesday</h3>
+            <ul id="tuesday-list"></ul>
+        </div>
+        <div class="day" id="Wednesday">
+            <h3>Wednesday</h3>
+            <ul id="wednesday-list"></ul>
+        </div>
+        <div class="day" id="Thursday">
+            <h3>Thursday</h3>
+            <ul id="thursday-list"></ul>
+        </div>
+        <div class="day" id="Friday">
+            <h3>Friday</h3>
+            <ul id="friday-list"></ul>
+        </div>
+        <div class="day" id="Saturday">
+            <h3>Saturday</h3>
+            <ul id="saturday-list"></ul>
+        </div>
+        <div class="day" id="Sunday">
+            <h3>Sunday</h3>
+            <ul id="sunday-list"></ul>
+        </div>
+    </div>
+    
     <script src="/static/script.js"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@ function toggleTaskType(taskType) {
         // Enable assignment fields and disable schedule fields
         document.getElementById('assignment').required = true;
         document.getElementById('due-date').required = true;
+        document.getElementById('due-date-time').required = true;
         document.getElementById('est-time').required = true;
 
         // Disable required for schedule fields
@@ -24,6 +25,7 @@ function toggleTaskType(taskType) {
         // Enable schedule fields and disable assignment fields
         document.getElementById('assignment').required = false;
         document.getElementById('due-date').required = false;
+        document.getElementById('due-date-time').required = false;
         document.getElementById('est-time').required = false;
 
         // Enable required for schedule fields
@@ -43,6 +45,7 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
     if (taskType === 'assignment') {
         const assignment = document.getElementById('assignment').value;
         const dueDate = document.getElementById('due-date').value;
+        const dueDateTime = document.getElementById('due-date-time').value;
         const estTime = document.getElementById('est-time').value;
 
         // Send the assignment data to the server
@@ -54,13 +57,13 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
             body: JSON.stringify({
                 assignment: assignment,
                 due_date: dueDate,
+                due_date_time: dueDateTime,
                 est_time: estTime,
             }),
         })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            loadAssignments();
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -88,7 +91,6 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            loadSchedule();
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -98,6 +100,7 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
     // Reset the form but keep the current task type
     document.getElementById('task-form').reset();
     document.getElementById('task-type').value = taskType; // Keep task type after reset
+    loadWeeklySchedule();
 });
 
 // Call the function on page load to set the initial state
@@ -105,48 +108,25 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleTaskType(document.getElementById('task-type').value);
 });
 
-// Function to load assignments
-function loadAssignments() {
-    fetch('/get_assignments')
-        .then(response => response.json())
-        .then(assignments => {
-            const assignmentsList = document.getElementById('assignments-list');
-            assignmentsList.innerHTML = ''; // Clear the existing list
-
-            if (assignments && assignments.length > 0) {
-                assignments.forEach(assignment => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${assignment.assignment} - Due: ${assignment.due_date} - Est Time: ${assignment.est_time} hours`;
-                    assignmentsList.appendChild(listItem);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error('Error loading assignments:', error);
-        });
-}
-
-// Function to load schedule
-function loadSchedule() {
-    fetch('/get_schedule')
+function loadWeeklySchedule() {
+    fetch('/get_weekly_schedule')
         .then(response => response.json())
         .then(data => {
-            const scheduleList = document.getElementById('schedule-list');
-            scheduleList.innerHTML = ''; // Clear the existing schedule
-
-            if (data && data.schedule && data.schedule.length > 0) {
-                data.schedule.forEach(item => {
+            // Loop through each day of the week and populate the list
+            for (const [day, tasks] of Object.entries(data)) {
+                const dayList = document.getElementById(day.toLowerCase() + '-list');
+                dayList.innerHTML = ''; // Clear the existing list
+                tasks.forEach(task => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `${item.day_of_week} - ${item.start_time} to ${item.end_time} - ${item.task_desc}`;
-                    scheduleList.appendChild(listItem);
+                    listItem.textContent = task;
+                    dayList.appendChild(listItem);
                 });
             }
         })
-        .catch((error) => {
-            console.error('Error loading schedule:', error);
+        .catch(error => {
+            console.error('Error loading weekly schedule:', error);
         });
 }
 
-// Initial load
-loadAssignments();
-loadSchedule();
+// Update calander when the page loads
+loadWeeklySchedule();
