@@ -38,10 +38,10 @@ def add_assignment():
 @app.route('/add_schedule', methods=['POST'])
 def add_schedule():
     data = request.get_json()
-    day_of_week = data.get('day_of_week')
+    task_desc = data.get('task_desc')
+    date = data.get('date')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
-    task_desc = data.get('task_desc')
 
     # Save schedule to CSV
     file_path = 'data/schedule.csv'
@@ -49,8 +49,8 @@ def add_schedule():
         writer = csv.writer(f)
         # Write header if file is empty
         if os.path.getsize(file_path) == 0:
-            writer.writerow(['day_of_week', 'start_time', 'end_time', 'task_desc'])
-        writer.writerow([day_of_week, start_time, end_time, task_desc])
+            writer.writerow(['task_desc','date', 'start_time', 'end_time'])
+        writer.writerow([task_desc, date, start_time, end_time])
 
     return jsonify({"message": "Schedule added!"}), 200
 
@@ -71,34 +71,42 @@ def get_weekly_schedule():
     schedule_file_path = 'data/schedule.csv'
     assignments_file_path = 'data/assignments.csv'
 
-    # Check if schedule file exists and read from it
-    if os.path.exists(schedule_file_path) and os.path.getsize(schedule_file_path) > 0:
-        with open(schedule_file_path, 'r') as f:
-            reader = csv.reader(f)
-            next(reader)  # Skip header
-            for row in reader:
-                if len(row) == 4:
-                    day_of_week = row[0]
-                    task = f"Task: {row[1]} from {row[2]} - {row[3]}"
-                    if day_of_week in weekly_schedule:
-                        weekly_schedule[day_of_week].append(task)
+    try:
+        # Check if schedule file exists and read from it
+        if os.path.exists(schedule_file_path) and os.path.getsize(schedule_file_path) > 0:
+            with open(schedule_file_path, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    if len(row) == 4:
+                        date = datetime.strptime(row[1], '%Y-%m-%d')  # Correct date format
+                        day_of_week = date.strftime('%A')
+                        start_time = row[2]
+                        end_time = row[3]
+                        schedule = f"Schedule: {row[0]} from {start_time} - {end_time} on {row[1]}"
+                        if day_of_week in weekly_schedule:
+                            weekly_schedule[day_of_week].append(schedule)
 
-    # Check if assignments file exists and read from it
-    if os.path.exists(assignments_file_path) and os.path.getsize(assignments_file_path) > 0:
-        with open(assignments_file_path, 'r') as f:
-            reader = csv.reader(f)
-            next(reader)  # Skip header
-            for row in reader:
-                if len(row) == 4:
-                    due_date = datetime.strptime(row[1], '%Y-%m-%d')  # Convert due_date to datetime object
-                    day_of_week = due_date.strftime('%A')  # Get the day of the week (e.g., 'Monday')
-                    due_time = row[2]  # Assuming due_date_time is the third column
-                    estimated_time = row[3]  # Assuming estimated_time is the fourth column
-                    task = f"Assignment: {row[0]} - Due: {due_date.date()} {due_time} (Est. {estimated_time} hours)"
-                    if day_of_week in weekly_schedule:
-                        weekly_schedule[day_of_week].append(task)
+        # Check if assignments file exists and read from it
+        if os.path.exists(assignments_file_path) and os.path.getsize(assignments_file_path) > 0:
+            with open(assignments_file_path, 'r') as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    if len(row) == 4:
+                        due_date = datetime.strptime(row[1], '%Y-%m-%d')  # Correct date format
+                        day_of_week = due_date.strftime('%A')
+                        due_time = row[2]
+                        estimated_time = row[3]
+                        task = f"Assignment: {row[0]} - Due: {due_date.date()} {due_time} (Est. {estimated_time} hours)"
+                        if day_of_week in weekly_schedule:
+                            weekly_schedule[day_of_week].append(task)
 
-    return jsonify(weekly_schedule)
+        return jsonify(weekly_schedule), 200
+
+    except Exception as e:
+        print(f"Error loading weekly schedule: {e}")
+        return jsonify({"error": "Failed to load weekly schedule"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

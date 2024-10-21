@@ -24,19 +24,10 @@
         </div>
     
         <div id="schedule-fields" style="display: none;">
-            <select id="day-of-week" name="day-of-week" required>
-                <option value="">Select Day</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
-            </select>
+            <input type="text" id="task-desc" name="task-desc" placeholder="Task Description" required>
+            <input type="date" id="date" name="date" required>
             <input type="time" id="start-time" name="start-time" required>
             <input type="time" id="end-time" name="end-time" required>
-            <input type="text" id="task-desc" name="task-desc" placeholder="Task Description" required>
         </div>
     
         <button type="submit">Submit</button>

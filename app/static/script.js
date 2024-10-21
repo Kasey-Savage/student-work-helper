@@ -14,10 +14,10 @@ function toggleTaskType(taskType) {
         document.getElementById('est-time').required = true;
 
         // Disable required for schedule fields
-        document.getElementById('day-of-week').required = false;
+        document.getElementById('task-desc').required = false;
+        document.getElementById('date').required = false;
         document.getElementById('start-time').required = false;
         document.getElementById('end-time').required = false;
-        document.getElementById('task-desc').required = false;
     } else if (taskType === 'schedule') {
         assignmentFields.style.display = 'none';
         scheduleFields.style.display = 'block';
@@ -29,10 +29,10 @@ function toggleTaskType(taskType) {
         document.getElementById('est-time').required = false;
 
         // Enable required for schedule fields
-        document.getElementById('day-of-week').required = true;
+        document.getElementById('task-desc').required = true;
+        document.getElementById('date').required = true;
         document.getElementById('start-time').required = true;
         document.getElementById('end-time').required = true;
-        document.getElementById('task-desc').required = true;
     }
 }
 
@@ -48,7 +48,7 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         const dueDateTime = document.getElementById('due-date-time').value;
         const estTime = document.getElementById('est-time').value;
 
-        // Send the assignment data to the server
+        // Send the assignment data to the csv file
         fetch('/add_assignment', {
             method: 'POST',
             headers: {
@@ -70,22 +70,22 @@ document.getElementById('task-form').addEventListener('submit', function(event) 
         });
 
     } else if (taskType === 'schedule') {
-        const dayOfWeek = document.getElementById('day-of-week').value;
+        const taskDesc = document.getElementById('task-desc').value;
+        const dateOf = document.getElementById('date').value;
         const startTime = document.getElementById('start-time').value;
         const endTime = document.getElementById('end-time').value;
-        const taskDesc = document.getElementById('task-desc').value;
 
-        // Send the schedule data to the server
+        // Send the schedule data to the csv file
         fetch('/add_schedule', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                day_of_week: dayOfWeek,
+                task_desc : taskDesc,
+                date: dateOf,
                 start_time: startTime,
                 end_time: endTime,
-                task_desc: taskDesc,
             }),
         })
         .then(response => response.json())
